@@ -1,13 +1,10 @@
 from rdkit.Chem import rdmolfiles
-import rdkit
 import networkx as nx
 import numpy as np
 import torch
 from torch_geometric.data import Data
-from multiprocessing import Pool
 import os
-
-
+from graphUtils import createGraph
 
 
 
@@ -15,9 +12,9 @@ def createGraphs(dataDir, proteinPocket, outputPath):
     """Create Interaction Graph between protein pocket and every ligand(.mol format) in the dataDir directory. 
     The graphs are saved in "outputPath" directory."""
     for file in os.listdir(dataDir):
-        if not file.endswith(".mol"):
+        if not file.endswith(".mol2"):
             continue
-        ligand  = rdmolfiles.MolFromMolFile(f"{dataDir}/{file}",removeHs=True)
+        ligand  = rdmolfiles.MolFromMol2File(f"{dataDir}/{file}",removeHs=True)
         if proteinPocket is None and ligand is None:
                 continue
         if proteinPocket is None:
@@ -38,9 +35,9 @@ def createGraphs(dataDir, proteinPocket, outputPath):
             with open(f"{outputPath}/{file[:-4]}_graph.pt","wb") as file:
                 torch.save(graph_pt,file)
 
-proteinPath = "" #change according to data set
-dataDir = ""
-outputPath = ""
+proteinPath = "/home/alex/Documents/Projekte/4ezx/4ezx_pocket.pdb" #change according to data set
+dataDir = "/home/alex/Documents/Projekte/4ezx"
+outputPath = "/home/alex/Documents/Projekte/test_output"
 
 proteinPocket = rdmolfiles.MolFromPDBFile(proteinPath, removeHs = True)
 createGraphs(dataDir,proteinPocket, outputPath)

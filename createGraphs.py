@@ -4,7 +4,9 @@ import numpy as np
 import torch
 from torch_geometric.data import Data
 import os
-from graphUtils import createGraph
+from graphUtils import createGraph,convertNetworkxToPytorch
+
+
 
 
 
@@ -23,20 +25,14 @@ def createGraphs(dataDir, proteinPocket, outputPath):
                 continue
         else:
             graph = createGraph(ligand,proteinPocket)
-            node_features = nx.get_node_attributes(graph,"feature")
-            edges = graph.edges
-            edges = torch.tensor(np.array(graph.edges).T, dtype=torch.long)
-            edge_features = nx.get_edge_attributes(graph,"feature")
-            node_features = torch.tensor(np.array(list(node_features.values())), dtype=torch.float)
-            edge_features = torch.tensor(np.array(list(edge_features.values())), dtype=torch.float)
-            node_features = node_features.reshape((len(node_features),11))
-            edge_features = edge_features.reshape(len(edge_features),6)
-            graph_pt = Data(node_features,edges,edge_features)
+            graph_pt = convertNetworkxToPytorch(graph)
             with open(f"{outputPath}/{file[:-4]}_graph.pt","wb") as file:
                 torch.save(graph_pt,file)
 
-proteinPath = "/home/alex/Documents/Projekte/4ezx/4ezx_pocket.pdb" #change according to data set
-dataDir = "/home/alex/Documents/Projekte/4ezx"
+
+      
+proteinPath = "/home/alex/Documents/Projekte/4ezx/4ezx_pocket.pdb" #path to protein .pdb file
+dataDir = "/home/alex/Documents/Projekte/4ezx"                      #path to protein .pdb file
 outputPath = "/home/alex/Documents/Projekte/test_output"
 
 proteinPocket = rdmolfiles.MolFromPDBFile(proteinPath, removeHs = True)

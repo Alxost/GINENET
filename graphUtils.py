@@ -233,3 +233,15 @@ def createGraph(ligand,protein):
         graph.add_edge(bond[0],bond[1], feature = feature)
         graph.add_edge(bond[1],bond[0], feature = feature)
     return graph
+
+def convertNetworkxToPytorch(graph):
+    node_features = nx.get_node_attributes(graph,"feature")
+    edges = graph.edges
+    edges = torch.tensor(np.array(graph.edges).T, dtype=torch.long)
+    edge_features = nx.get_edge_attributes(graph,"feature")
+    node_features = torch.tensor(np.array(list(node_features.values())), dtype=torch.float)
+    edge_features = torch.tensor(np.array(list(edge_features.values())), dtype=torch.float)
+    node_features = node_features.reshape((len(node_features),11))
+    edge_features = edge_features.reshape(len(edge_features),6)
+    graph_pt = Data(node_features,edges,edge_features)
+    return graph_pt

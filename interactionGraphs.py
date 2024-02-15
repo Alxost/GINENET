@@ -31,9 +31,9 @@ def createGraphs(dataDir, proteinPocket, outputPath):
 
 
       
-proteinPath = "/home/alex/Documents/Projekte/4ezx/4ezx_pocket.pdb" #path to protein .pdb file
-dataDir = "/home/alex/Documents/Projekte/4ezx"                      #path to protein .pdb file
-outputPath = "/home/alex/Documents/Projekte/test_output"
+proteinPath = "" #path to protein .pdb file
+dataDir = ""                      #path to protein .pdb file
+outputPath = ""
 
 proteinPocket = rdmolfiles.MolFromPDBFile(proteinPath, removeHs = True)
 createGraphs(dataDir,proteinPocket, outputPath)
